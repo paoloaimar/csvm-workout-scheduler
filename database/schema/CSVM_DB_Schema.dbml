@@ -1,0 +1,222 @@
+Project CsvmWorkoutScheduler {
+  database_type: 'SQL Server'
+  Note: '''
+    # CSVM Workout Scheduler Database
+    **Architecture schema of the database that will contains the workout plans of the CSVM customers**
+  '''
+}
+
+
+//User's status master data
+Table UserStatus as UserStatus {
+  PkId int [pk, increment, note:"Unique id of the state"]
+  Code nvarchar(20) [not null, unique, note:"Status's code"]
+  Description nvarchar(150) [null, note:"State's description"]
+  CreatedAt datetime [null,default: `CURRENT_TIMESTAMP`, note:"Date of state creation"]
+  Updated_at datetime [null, note:"Date of state update"]
+  
+  note: "The table contains all the state that a user can assume."
+
+  Indexes {
+     (Code) [name:'IDX_StatusCode']
+  }
+}
+
+// Users master data
+Table Users as Users {
+  PkId bigint [pk, increment, note: "User's unique id"]
+  StatusPkId int [ref: - UserStatus.PkId, note:"User's current state"]
+  FirstName nvarchar(100) [null, note:"User's first name"]
+  LastName nvarchar(100) [null, note:"User's last name"]
+  LoginName nvarchar(100) [not null, note:"User's login name"]
+  CreatedAt datetime [default: `CURRENT_TIMESTAMP`, not null, note:"Date of user creation"] 
+  UpdatedAt datetime [null, note:"Date of user update"]
+  
+  note: "This table contains all the application's users."
+
+    Indexes {
+     (FirstName) [name:'IDX_UserFirstName']
+     (LastName) [name:'IDX_UserLastName']
+     (LoginName) [name:'IDX_UserLoginName']
+  }
+
+}
+
+//Roles master data 
+Table Roles as Roles {
+  PkId int [pk, increment, note:"Unique id of the role"] 
+  Level int [unique, not null, note:"Role auth level [0-255]"]
+  Code nvarchar(50) [unique, not null, note:"Identification code of the role"]
+  Description nvarchar(150) [null, note:"Role's description"]
+  CreatedAt datetime [default: `CURRENT_TIMESTAMP`, not null, note:"Date of role creation"] 
+  UpdatedAt datetime [null, note:"Date of role update"]
+  
+  note: "The table contains all the roles level that a user can assume."
+
+  Indexes {
+     (Code) [name:'IDX_RoleCode']
+  }  
+}
+
+//Authorizations master data
+Table Authorizations as Auth {
+  PkId int [pk, increment, note:"Unique id of the authorization"]
+  Code nvarchar(20) [not null, unique, note:"Authorization's code"]
+  Description nvarchar(150) [null, note:"Authorization's description"]
+  CreatedAt datetime [null,default: `CURRENT_TIMESTAMP`, note:"Date of authorization creation"]
+  UpdatedAt datetime [null, note:"Date of authorization update"]
+  
+  note: "The table contains all the authorizations to a given application feature."
+
+  Indexes {
+     (Code) [name:'IDX_AuthCode']
+  } 
+}
+
+//Authorizations/Roles association table
+Table RoleToAuth as RoleToAuth {
+  RolePkId int [note:"Role's Id"]
+  AuthPkId int [note:"Authorization's Id"]
+
+  Indexes {
+     (RolePkId, AuthPkId) [unique]
+  }
+
+  note: "The table contains all the permissions (authorizations) of a user role."
+
+}
+Ref: RoleToAuth.RolePkId - Roles.PkId [delete: cascade, update: no action]
+Ref: RoleToAuth.AuthPkId - Auth.PkId [delete: cascade, update: no action]
+
+//User/Roles association table
+Table UserToRoles as UserToRoles {
+  UserPkId bigint [note:"User's Id"]
+  RolesPkId int [note:"Role's Id"]
+
+  Indexes {
+     (UserPkId, RolesPkId) [unique]
+  }
+
+  note: "The table contains all the roles associated to a user."
+
+}
+Ref: UserToRoles.UserPkId - Users.PkId [delete: cascade, update: no action]
+Ref: UserToRoles.RolesPkId - Roles.PkId [delete: cascade, update: no action]
+
+//Credential status master data
+Table CredentialStatus as CredentialStatus {
+  PkId int [pk, increment, note:"Unique id of teh status"]
+  Code nvarchar(20) [not null, unique, note:"Status's code"]
+  Description nvarchar(150) [null, note:"Status's description"]
+  CreatedAt datetime [null,default: `CURRENT_TIMESTAMP`, note:"Date of the status creation"]
+  Updated_at datetime [null, note:"Date of the status update"]
+  
+  note: "The table contains the list of possible states a user credential can be in."
+
+    Indexes {
+     (Code) [name:'IDX_CredentialStatusCode']
+  }
+}
+
+//Credentials master data
+Table Credentials as Credentials {
+  PkId bigint [pk, increment, note: "Unique id of the credential"]
+  StatusPkId int [ref: - CredentialStatus.PkId, note:"Credential's status", default:1]
+  UserPkId bigint [not null, note: "Reference user id"]
+  Username nvarchar(100) [not null, note:"Username used for login in the app"]
+  Email nvarchar(100) [not null, note:"Contact email"]
+  HashPwd varchar(200) [not null, note:"Crypted local password used for login"]
+  VerificationCode varchar(200) [null, note:"Verification code used during user activation."]
+  CreatedAt datetime [default: `CURRENT_TIMESTAMP`, not null, note:"Date of the credential creation"] 
+  UpdatedAt datetime [null, note:"Date of the credential update"]
+  
+  Indexes {
+     (Username) [unique] 
+     (Email) [unique]
+  }
+
+  note: "The table contains the set of credentials used by users to connect to the application."
+}
+Ref: Credentials.UserPkId > Users.PkId [delete: cascade, update: no action]
+
+
+//Exercises mater data
+Table Exercices as Exercices {
+  PkId bigint [pk, increment, note: "Unique id of the Exercise"]
+  Name nvarchar(100) [not null, note: "Exercise's name"]
+  Description nvarchar(250) [null, note:"Exercise's description"]
+  Note nvarchar(500) [null, note:"Exercice's notes, if any"]
+  ImageUUID  char(255) [null, note: "Reference to the image linked to the exercise"]
+  CreatedAt datetime [default: `CURRENT_TIMESTAMP`, not null, note:"Date of the exercise creation"] 
+  UpdatedAt datetime [null, note:"Date of the exercise update"]
+
+  Indexes {
+     (Name) [unique] 
+  }
+
+  note: "The table contains all the exercices that can be use to fill out a workout schedule."
+}
+
+// Sensor attributes master data
+Table ExercicesAttributes as ExercicesAttributes {
+  PkId int [pk, increment, note:"Primary key of the exercise attribute"]
+  Attribute nvarchar(50) [not null, note: "Exercice attribute identification name"]
+  Description nvarchar(250) [null, note:"Exercice attribute description"]
+
+  Indexes {
+    (Attribute) [unique]
+  }
+  note: "Exercice attributes master data table. This table define all the attribute through which will be possible aggregate or categorize exercices."
+
+}
+
+//Exercices/Attributes association table
+Table AttributeToExercise as AttributeToExercise {
+  PkId bigint [pk, not null, increment, note: "Primary key of the table"]
+  ExercisePkId bigint [not null, note: "Primary key of the exercise"]
+  AttributePkId int [not null, note: "Primary key of the aggregation attribute"]
+
+  Indexes {
+    (ExercisePkId, AttributePkId) [unique]
+  }
+
+  note: "Table to link n attribute to an exercise."
+}
+Ref: Exercices.PkId - AttributeToExercise.ExercisePkId  [delete: cascade, update: no action]
+Ref: ExercicesAttributes.PkId - AttributeToExercise.AttributePkId  [delete: cascade, update: no action]
+
+// Workout schedule master data
+Table WorkoutSchedules as WorkoutSchedules{
+  PkId bigint [pk, increment, note: "Unique id of the workout schedule"]
+  Name nvarchar(100) [not null, note: "Workout schedule name"]
+  Version nvarchar(50) [not null, note:"Version of the schedule"]
+  Note nvarchar(500) [null, note:"Exercice's notes, if any"]
+  Owner nvarchar(250) [not null, note: "Owner (customer name) of the schedule"]
+  CreatedBy nvarchar(100) [ref: - Users.LoginName, note:"User who create the schedule"]
+  CreatedAt datetime [default: `CURRENT_TIMESTAMP`, not null, note:"Date of the schedule creation"] 
+  UpdatedAt datetime [null, note:"Date of the last schedule update"]
+
+  Indexes {
+     (Name, Version) [unique] 
+     (Owner) [name:'IDX_ScheduleOwner']
+     (CreatedAt) [name:'IDX_ScheduleCreatedAt']
+     (UpdatedAt) [name:'IDX_ScheduleUpdatedAt']
+  }
+
+  note: "The table contains all the workout schedules ."
+}
+
+Table ScheduleContent as ScheduleContent {
+  SchedulePkId bigint [not null, note: "Unique id of the workout schedule"]
+  ExercisePkId bigint [not null, note: "Unique id of the exercise"]
+
+  Indexes{
+    (SchedulePkId, ExercisePkId) [unique]
+  }
+
+  note: "The table define the concrete content (exercices) of a compiled workout schedule."
+}
+
+Ref: WorkoutSchedules.PkId - ScheduleContent.SchedulePkId  [delete: cascade, update: no action]
+Ref: Exercices.PkId - ScheduleContent.ExercisePkId  [delete: no action, update: no action]
+
