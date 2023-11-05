@@ -1,0 +1,28 @@
+{
+  "name": "csvm-db",
+  "version": "1.0.0",
+  "description": "CSVM Wokout Scheduler Database Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "stop": "docker stop csvm-db",
+    "stop:remove": "run-s stop remove-container remove-image remove-volume",
+    "start": "docker start csvm-db",
+    "remove-container": "docker rm csvm-db",
+    "remove-volume": "docker volume rm csvm-db-volume",
+    "remove-image": "docker rmi paoloaimar/csvm-db:latest",
+    "push": "docker push paoloaimar/csvm-db:latest",
+    "init": "scripts\\cmd\\init-db.bat",
+    "drop": "scripts\\cmd\\drop-db.bat",
+    "build-image": "docker build -t paoloaimar/csvm-db:latest .",
+    "run-container": "docker run --name csvm-db --hostname csvm-db --env-file ./.env -v csvm-db-volume:/var/opt/mssql -p 1433:1433 -d paoloaimar/csvm-db:latest",
+    "build": "run-s build-image run-container",
+    "backup": "scripts\\cmd\\backup-db.bat",
+    "get-backup": "scripts\\cmd\\get-backups.bat"
+  },
+  "author": "Paolo Aimar",
+  "license": "ISC",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}

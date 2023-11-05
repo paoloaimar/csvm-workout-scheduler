@@ -1,0 +1,16 @@
+USE [master]
+GO
+
+CREATE LOGIN [csvmDbAdmin] WITH PASSWORD=N'Csvm2023!', 
+DEFAULT_DATABASE=[master], 
+DEFAULT_LANGUAGE=[us_english], 
+CHECK_EXPIRATION=OFF, CHECK_POLICY=OFF
+GO
+
+ALTER LOGIN [csvmDbAdmin] ENABLE
+GO
+
+ALTER SERVER ROLE [sysadmin] ADD MEMBER [csvmDbAdmin]
+GO 
+ALTER SERVER ROLE [serveradmin] ADD MEMBER [csvmDbAdmin]
+GO

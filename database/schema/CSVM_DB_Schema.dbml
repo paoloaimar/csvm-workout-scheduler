@@ -79,14 +79,14 @@ Table RoleToAuth as RoleToAuth {
   AuthPkId int [note:"Authorization's Id"]
 
   Indexes {
-     (RolePkId, AuthPkId) [unique]
+      (RolePkId, AuthPkId) [pk]
   }
 
   note: "The table contains all the permissions (authorizations) of a user role."
 
 }
-Ref: RoleToAuth.RolePkId - Roles.PkId [delete: cascade, update: no action]
-Ref: RoleToAuth.AuthPkId - Auth.PkId [delete: cascade, update: no action]
+Ref: Roles.PkId - RoleToAuth.RolePkId  [delete: cascade, update: no action]
+Ref: Auth.PkId - RoleToAuth.AuthPkId  [delete: cascade, update: no action]
 
 //User/Roles association table
 Table UserToRoles as UserToRoles {
@@ -94,14 +94,14 @@ Table UserToRoles as UserToRoles {
   RolesPkId int [note:"Role's Id"]
 
   Indexes {
-     (UserPkId, RolesPkId) [unique]
+     (UserPkId, RolesPkId) [pk]
   }
 
   note: "The table contains all the roles associated to a user."
 
 }
-Ref: UserToRoles.UserPkId - Users.PkId [delete: cascade, update: no action]
-Ref: UserToRoles.RolesPkId - Roles.PkId [delete: cascade, update: no action]
+Ref: Users.PkId - UserToRoles.UserPkId [delete: cascade, update: no action]
+Ref: Roles.PkId - UserToRoles.RolesPkId  [delete: cascade, update: no action]
 
 //Credential status master data
 Table CredentialStatus as CredentialStatus {
@@ -114,7 +114,7 @@ Table CredentialStatus as CredentialStatus {
   note: "The table contains the list of possible states a user credential can be in."
 
     Indexes {
-     (Code) [name:'IDX_CredentialStatusCode']
+     (Code)  [unique]
   }
 }
 
@@ -137,7 +137,7 @@ Table Credentials as Credentials {
 
   note: "The table contains the set of credentials used by users to connect to the application."
 }
-Ref: Credentials.UserPkId > Users.PkId [delete: cascade, update: no action]
+Ref: Users.PkId - Credentials.UserPkId  [delete: cascade, update: no action]
 
 
 //Exercises mater data
@@ -171,7 +171,7 @@ Table ExercicesAttributes as ExercicesAttributes {
 }
 
 //Exercices/Attributes association table
-Table AttributeToExercise as AttributeToExercise {
+Table dbo.AttributeToExercise as AttributeToExercise {
   PkId bigint [pk, not null, increment, note: "Primary key of the table"]
   ExercisePkId bigint [not null, note: "Primary key of the exercise"]
   AttributePkId int [not null, note: "Primary key of the aggregation attribute"]
@@ -192,7 +192,7 @@ Table WorkoutSchedules as WorkoutSchedules{
   Version nvarchar(50) [not null, note:"Version of the schedule"]
   Note nvarchar(500) [null, note:"Exercice's notes, if any"]
   Owner nvarchar(250) [not null, note: "Owner (customer name) of the schedule"]
-  CreatedBy nvarchar(100) [ref: - Users.LoginName, note:"User who create the schedule"]
+  CreatedBy nvarchar(100) [not null, note:"User who create the schedule"]
   CreatedAt datetime [default: `CURRENT_TIMESTAMP`, not null, note:"Date of the schedule creation"] 
   UpdatedAt datetime [null, note:"Date of the last schedule update"]
 
@@ -211,7 +211,7 @@ Table ScheduleContent as ScheduleContent {
   ExercisePkId bigint [not null, note: "Unique id of the exercise"]
 
   Indexes{
-    (SchedulePkId, ExercisePkId) [unique]
+    (SchedulePkId, ExercisePkId) [pk]
   }
 
   note: "The table define the concrete content (exercices) of a compiled workout schedule."
