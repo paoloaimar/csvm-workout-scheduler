@@ -1,0 +1,29 @@
+{
+  "name": "csvm-workout-scheduler",
+  "version": "1.0.0",
+  "description": "Web application which helps the staff of the Centro Sportivo Val Maira to manage the workout schedule of its customers. ",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "npm i --prefix backend && npm i --prefix frontend && npm i --prefix common",
+    "debug": "run-p start:backend start:frontend",
+    "start:backend": "npm run debug --prefix backend",
+    "start:frontend": "npm run start --prefix frontend"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paoloaimar/csvm-workout-scheduler.git"
+  },
+  "author": "Paolo Aimar",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/paoloaimar/csvm-workout-scheduler/issues"
+  },
+  "homepage": "https://github.com/paoloaimar/csvm-workout-scheduler#readme",
+  "devDependencies": {
+    "npm-run-all": "4.1.5"
+  },
+  "engines": {
+    "npm": ">=9.5.0",
+    "node": ">=18.0.0"
+  }
+}

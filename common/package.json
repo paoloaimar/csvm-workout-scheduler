@@ -1,0 +1,32 @@
+{
+  "name": "csvm-workout-scheduler-common",
+  "version": "1.0.0",
+  "description": "This project contains the common entities and types shared between projects.",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "npm run clean && tsc && npm run copy:package && npm run dist:backend",
+    "build:check": "tsc --noEmit",
+    "build:watch": "tsc --watch",
+    "clean": "IF EXIST dist rd /s /q dist",
+    "push": "npm publish --access public",
+    "copy:package": "copy package.json .\\dist",
+    "dist:backend": "xcopy /E /I /Y dist ..\\backend\\common"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paoloaimar/csvm-workout-scheduler.git"
+  },
+  "author": "Paolo Aimar",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/paoloaimar/csvm-workout-scheduler/issues"
+  },
+  "homepage": "https://github.com/paoloaimar/csvm-workout-scheduler#readme",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "csvm-workout-scheduler": "file:.."
+  }
+}

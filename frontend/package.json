@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "csvm-workout-scheduler": "file:.."
+  }
+}
