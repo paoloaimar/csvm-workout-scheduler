@@ -1,0 +1,26 @@
+{
+	"mVersionDependency": {
+		"UI5.sap/ui/core.sap_horizon_dark": "1.120.1",
+		"UI5.sap/ui/core": "1.120.1",
+		"UI5": "1.120.1"
+	},
+	"sEntity": "Theme",
+	"sId": "csvm_dark",
+	"sLabel": "Custom Evening Horizon",
+	"oExtends": "UI5.sap/ui/core.sap_horizon_dark",
+	"aBuildFiles": [
+		"library",
+		"css_variables",
+		"custom"
+	],
+	"aFiles": [
+		"library",
+		"global",
+		"css_variables",
+		"custom"
+	],
+	"sTextDirections": "LTR",
+	"sType": "STANDARD",
+	"sThemability": "PUBLIC",
+	"sReleaseStage": "GENERAL_AVAILABILITY"
+}
