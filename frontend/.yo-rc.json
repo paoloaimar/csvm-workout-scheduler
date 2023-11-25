@@ -1,0 +1,17 @@
+{
+  "generator-ui5-ts-app": {
+    "namespace": "test",
+    "framework": "OpenUI5",
+    "frameworkVersion": "1.120.1",
+    "author": "Paolo Aimar",
+    "initrepo": false,
+    "tstypes": "@openui5/types",
+    "tstypesVersion": "1.120.1",
+    "appId": "test",
+    "appURI": "test",
+    "cdnDomain": "sdk.openui5.org",
+    "defaultTheme": "sap_horizon",
+    "gte11150": true,
+    "setupCompleted": true
+  }
+}
