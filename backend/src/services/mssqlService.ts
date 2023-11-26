@@ -1,12 +1,6 @@
-//#region IMPORT MODULES
-
 const { EventEmitter } = require("events");
 require("dotenv").config();
 import sql, { Request } from 'mssql'
-
-//#endregion
-
-//#region DECLARATIONS
 
 //Result getData function
 interface IGetDataResult {
@@ -40,11 +34,6 @@ export enum ParameterDirection {
     Output
 }
 
-/**
- * TENNIS CLUB PLATFORM PROJECTS
- * FILE: sqlParameter.js
- * DESCRIPTION: Modello Parametro SQL
- */
 export class SqlParameter {
 
     name: string;
@@ -70,8 +59,6 @@ export class SqlStatement {
 
 }
 
-//#endregion
-
 /**
  * SqlService Class
  * Gestisce la connessione, il recupero e modifica dei dati in un DB MS SQL SERVER
@@ -80,22 +67,17 @@ class MssqlService extends EventEmitter {
 
     private static instance: MssqlService;
 
-    //#region COSTRUCTOR
-
     constructor() {
         super();
-        //inizializzazione servizio
+
         this._init();
-        //test di connessione
         this._testConnection();
     }
-
-    //#endregion
 
     //#region PRIVATE FUNCTIONS
 
     /**
-     * Inizializzazione servizio MS SQL SERVER
+     * Initialize the service
      */
     _init() {
 
@@ -161,14 +143,15 @@ class MssqlService extends EventEmitter {
             console.error(`Connection on SQL DB failed - ${err}`);
         }
     }
+
     //#endregion
 
     //#region PUBLIC FUNCTIONS
 
     /**
-     * Ritorna i dati risultati di una SELECT Statement TSQL
-     * @param {string} selectStatement SELECT Statement TSQL da eseguire
-     * @returns Dati ritornati dallo statement SQL
+     * Get data returned by a TSQL SELECT Statement 
+     * @param {string} selectStatement TSQL SELECT Statement to execute
+     * @returns 
      */
     async getData(sqlQuery: string, sqlParams?: ISqlParameter[]) {
 
@@ -258,8 +241,8 @@ class MssqlService extends EventEmitter {
     }
 
     /**
-     * Esegue una serie di query SQL Query nella stessa transazione SQL
-     * @param sqlStatement Lista di statement SQL da eseguire
+     * Execute a list of queries inside a SQL transaction
+     * @param sqlStatement SQL Statement list to execute
      */
     async executeQueriesInTransaction(sqlStatements?: SqlStatement[]) {
         let result: IExecuteQueryResult = { status: false, error: "" };

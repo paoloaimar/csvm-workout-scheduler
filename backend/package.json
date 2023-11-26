@@ -4,7 +4,12 @@
   "description": "Backend application of the Workout scheduler application.",
   "main": "dist/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/server.js",
+    "debug": "nodemon --inspect src/server.ts",
+    "build": "npm run clean && tsc --project ./tsconfig.json",
+    "build:check": "tsc --noEmit",
+    "push": "cf push",
+    "clean": "IF EXIST dist rd /s /q dist"
   },
   "repository": {
     "type": "git",
