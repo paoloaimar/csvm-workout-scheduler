@@ -76,22 +76,23 @@ CREATE TABLE [Credentials] (
 )
 GO
 
-CREATE TABLE [Exercices] (
+CREATE TABLE [Exercises] (
   [PkId] bigint PRIMARY KEY IDENTITY(1, 1),
   [Name] nvarchar(100) NOT NULL,
   [Description] nvarchar(250),
   [Note] nvarchar(500),
-  [ImageUUID] char(255),
+  [Image] image,
   [CreatedAt] datetime NOT NULL DEFAULT (CURRENT_TIMESTAMP),
   [UpdatedAt] datetime
 )
 GO
 
-CREATE TABLE [ExercicesAttributes] (
+CREATE TABLE [ExercisesAttributes] (
   [PkId] int PRIMARY KEY IDENTITY(1, 1),
   [Attribute] nvarchar(50) NOT NULL,
-  [Description] nvarchar(250)
-)
+  [Description] nvarchar(250),
+  [Image] image
+) 
 GO
 
 CREATE TABLE [WorkoutSchedules] (
@@ -147,10 +148,10 @@ GO
 CREATE UNIQUE INDEX [Credentials_index_8] ON [Credentials] ("Email")
 GO
 
-CREATE UNIQUE INDEX [Exercices_index_9] ON [Exercices] ("Name")
+CREATE UNIQUE INDEX [Exercises_index_9] ON [Exercises] ("Name")
 GO
 
-CREATE UNIQUE INDEX [ExercicesAttributes_index_10] ON [ExercicesAttributes] ("Attribute")
+CREATE UNIQUE INDEX [ExercisesAttributes_index_10] ON [ExercisesAttributes] ("Attribute")
 GO
 
 CREATE UNIQUE INDEX [WorkoutSchedules_index_11] ON [WorkoutSchedules] ("Name", "Version")
@@ -554,16 +555,16 @@ GO
 
 EXEC sp_addextendedproperty
 @name = N'Table_Description',
-@value = 'The table contains all the exercices that can be use to fill out a workout schedule.',
+@value = 'The table contains all the exercises that can be use to fill out a workout schedule.',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices';
+@level1type = N'Table',  @level1name = 'Exercises';
 GO
 
 EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Unique id of the Exercise',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
+@level1type = N'Table',  @level1name = 'Exercises',
 @level2type = N'Column', @level2name = 'PkId';
 GO
 
@@ -571,7 +572,7 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Exercise"s name',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
+@level1type = N'Table',  @level1name = 'Exercises',
 @level2type = N'Column', @level2name = 'Name';
 GO
 
@@ -579,7 +580,7 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Exercise"s description',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
+@level1type = N'Table',  @level1name = 'Exercises',
 @level2type = N'Column', @level2name = 'Description';
 GO
 
@@ -587,7 +588,7 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Exercice"s notes, if any',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
+@level1type = N'Table',  @level1name = 'Exercises',
 @level2type = N'Column', @level2name = 'Note';
 GO
 
@@ -595,15 +596,15 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Reference to the image linked to the exercise',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
-@level2type = N'Column', @level2name = 'ImageUUID';
+@level1type = N'Table',  @level1name = 'Exercises',
+@level2type = N'Column', @level2name = 'Image';
 GO
 
 EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Date of the exercise creation',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
+@level1type = N'Table',  @level1name = 'Exercises',
 @level2type = N'Column', @level2name = 'CreatedAt';
 GO
 
@@ -611,22 +612,22 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Date of the exercise update',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'Exercices',
+@level1type = N'Table',  @level1name = 'Exercises',
 @level2type = N'Column', @level2name = 'UpdatedAt';
 GO
 
 EXEC sp_addextendedproperty
 @name = N'Table_Description',
-@value = 'Exercice attributes master data table. This table define all the attribute through which will be possible aggregate or categorize exercices.',
+@value = 'Exercice attributes master data table. This table define all the attribute through which will be possible aggregate or categorize exercises.',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'ExercicesAttributes';
+@level1type = N'Table',  @level1name = 'ExercisesAttributes';
 GO
 
 EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Primary key of the exercise attribute',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'ExercicesAttributes',
+@level1type = N'Table',  @level1name = 'ExercisesAttributes',
 @level2type = N'Column', @level2name = 'PkId';
 GO
 
@@ -634,7 +635,7 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Exercice attribute identification name',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'ExercicesAttributes',
+@level1type = N'Table',  @level1name = 'ExercisesAttributes',
 @level2type = N'Column', @level2name = 'Attribute';
 GO
 
@@ -642,7 +643,7 @@ EXEC sp_addextendedproperty
 @name = N'Column_Description',
 @value = 'Exercice attribute description',
 @level0type = N'Schema', @level0name = 'dbo',
-@level1type = N'Table',  @level1name = 'ExercicesAttributes',
+@level1type = N'Table',  @level1name = 'ExercisesAttributes',
 @level2type = N'Column', @level2name = 'Description';
 GO
 
@@ -719,7 +720,7 @@ GO
 
 EXEC sp_addextendedproperty
 @name = N'Table_Description',
-@value = 'The table define the concrete content (exercices) of a compiled workout schedule.',
+@value = 'The table define the concrete content (exercises) of a compiled workout schedule.',
 @level0type = N'Schema', @level0name = 'dbo',
 @level1type = N'Table',  @level1name = 'ScheduleContent';
 GO
@@ -792,14 +793,14 @@ GO
 ALTER TABLE [Credentials] ADD FOREIGN KEY ([UserPkId]) REFERENCES [Users] ([PkId]) ON DELETE CASCADE ON UPDATE NO ACTION
 GO
 
-ALTER TABLE [dbo].[AttributeToExercise] ADD FOREIGN KEY ([ExercisePkId]) REFERENCES [Exercices] ([PkId]) ON DELETE CASCADE ON UPDATE NO ACTION
+ALTER TABLE [dbo].[AttributeToExercise] ADD FOREIGN KEY ([ExercisePkId]) REFERENCES [Exercises] ([PkId]) ON DELETE CASCADE ON UPDATE NO ACTION
 GO
 
-ALTER TABLE [dbo].[AttributeToExercise] ADD FOREIGN KEY ([AttributePkId]) REFERENCES [ExercicesAttributes] ([PkId]) ON DELETE CASCADE ON UPDATE NO ACTION
+ALTER TABLE [dbo].[AttributeToExercise] ADD FOREIGN KEY ([AttributePkId]) REFERENCES [ExercisesAttributes] ([PkId]) ON DELETE CASCADE ON UPDATE NO ACTION
 GO
 
 ALTER TABLE [ScheduleContent] ADD FOREIGN KEY ([SchedulePkId]) REFERENCES [WorkoutSchedules] ([PkId]) ON DELETE CASCADE ON UPDATE NO ACTION
 GO
 
-ALTER TABLE [ScheduleContent] ADD FOREIGN KEY ([ExercisePkId]) REFERENCES [Exercices] ([PkId]) ON DELETE NO ACTION ON UPDATE NO ACTION
+ALTER TABLE [ScheduleContent] ADD FOREIGN KEY ([ExercisePkId]) REFERENCES [Exercises] ([PkId]) ON DELETE NO ACTION ON UPDATE NO ACTION
 GO
