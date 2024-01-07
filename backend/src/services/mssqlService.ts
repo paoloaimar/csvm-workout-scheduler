@@ -4,6 +4,7 @@ import sql, { Request } from 'mssql'
 
 //Result getData function
 interface IGetDataResult {
+    success: boolean;
     rows?: sql.IRecordSet<any>;
     rowNumber: number;
     error: string;
@@ -11,13 +12,13 @@ interface IGetDataResult {
 
 //Result executeNonQuery function
 interface IExecuteQueryResult {
-    status: boolean;
+    success: boolean;
     error: string;
     rowAffected?: number;
 };
 
 interface IExecuteStoredProcedureResult {
-    status: boolean;
+    success: boolean;
     error: string;
     data?: any;
 }
@@ -61,7 +62,7 @@ export class SqlStatement {
 
 /**
  * SqlService Class
- * Gestisce la connessione, il recupero e modifica dei dati in un DB MS SQL SERVER
+ * Handle the connection and the data operations towards a DB MSSQL
  */
 class MssqlService extends EventEmitter {
 
@@ -155,7 +156,7 @@ class MssqlService extends EventEmitter {
      */
     async getData(sqlQuery: string, sqlParams?: ISqlParameter[]) {
 
-        let result: IGetDataResult = { rows: undefined, rowNumber: 0, error: "" };
+        let result: IGetDataResult = { rows: undefined, rowNumber: 0, error: "", success: false };
 
         try {
             //apertura connessione verso il DB
@@ -179,6 +180,7 @@ class MssqlService extends EventEmitter {
                 result.rows = dbRes.recordsets ? dbRes.recordsets[0] ? dbRes.recordsets[0] : undefined : undefined; //righe ritornate;
                 result.rowNumber = dbRes.rowsAffected[0]; //numero di righe
                 result.error = "";
+                result.success = true;
 
             } else {
                 throw new Error(`Sql getData Exception - Query:${sqlQuery}`);
@@ -190,7 +192,7 @@ class MssqlService extends EventEmitter {
             result.rows = undefined; //righe ritornate;
             result.rowNumber = 0; //numero di righe
             result.error = String(err);
-
+            result.success = false;
 
         }
 
@@ -205,7 +207,7 @@ class MssqlService extends EventEmitter {
      */
     async executeNonQuery(sqlQuery: string, sqlParams?: ISqlParameter[], request?: Request) {
 
-        let result: IExecuteQueryResult = { status: false, error: "" };
+        let result: IExecuteQueryResult = { success: false, error: "" };
         try {
 
             if (!request) {
@@ -227,7 +229,7 @@ class MssqlService extends EventEmitter {
             const dbRes = await request.query(sqlQuery);
 
             //QUERY OK => composizione dell'oggetto ritornato
-            result.status = dbRes.rowsAffected[0] > 0;
+            result.success = dbRes.rowsAffected[0] > 0;
             result.rowAffected = dbRes.rowsAffected[0];
 
         } catch (err) {
@@ -245,7 +247,7 @@ class MssqlService extends EventEmitter {
      * @param sqlStatement SQL Statement list to execute
      */
     async executeQueriesInTransaction(sqlStatements?: SqlStatement[]) {
-        let result: IExecuteQueryResult = { status: false, error: "" };
+        let result: IExecuteQueryResult = { success: false, error: "" };
 
         //apertura connessione/transazione verso il DB
         const dbConn = new sql.ConnectionPool(this.sqlConfig);
@@ -278,7 +280,7 @@ class MssqlService extends EventEmitter {
             }
 
             //verifico eventuali KO
-            const badExecution = results.filter(r => r.status === false);
+            const badExecution = results.filter(r => r.success === false);
             if (badExecution.length > 0) {
                 //KO presenti!!
                 throw (Error(badExecution[0].error));
@@ -286,7 +288,7 @@ class MssqlService extends EventEmitter {
 
             await transaction.commit();
 
-            result.status = rowsAffected > 0;
+            result.success = rowsAffected > 0;
             result.error = lastError;
 
         } catch (err) {
@@ -309,7 +311,7 @@ class MssqlService extends EventEmitter {
      * @returns 
      */
     async executeStoredProcedure(spName: string, sqlParams?: ISqlParameter[], request?: Request) {
-        let result: IExecuteStoredProcedureResult = { status: false, error: "" }
+        let result: IExecuteStoredProcedureResult = { success: false, error: "" }
         try {
             if (!request) {
 
@@ -340,7 +342,7 @@ class MssqlService extends EventEmitter {
                 result.data = dbRes.output;
             }
             result.error = "";
-            result.status = true;
+            result.success = true;
 
 
         } catch (error) {

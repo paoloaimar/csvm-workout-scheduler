@@ -28,7 +28,8 @@ app.use(bodyParser.json());
 //#endregion
 
 //#region Router Mounting
-
+import routes from './routes';
+app.use('/api/v1', routes);
 //#endregion
 
 //Set Log level
@@ -39,4 +40,5 @@ logger.setNewLevel(LogLevel as LogLevelDesc);
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
     logger.info(`Express server listening on port ${port}...`);
+    logger.info(`Endpoints available at http://localhost:${port}/api/v1`);
 });

@@ -17,7 +17,7 @@
     "drop": "scripts\\cmd\\drop-db.bat",
     "build-azure": "docker build -t paoloaimar/csvm-db-azure:latest -f Dockerfile.AZURE-SQL .",
     "build-mssql": "docker build -t paoloaimar/csvm-db-mssql:latest -f Dockerfile.MSSQL .",
-    "run-container": "docker run --name csvm-db --hostname csvm-db --env-file ./.env -v csvm-db-volume:/var/opt/mssql -p 1433:1433 -d paoloaimar/csvm-db-azure",
+    "run-container": "docker run --name csvm-db --hostname csvm-db --env-file ./.env -v csvm-db-volume:/var/opt/mssql -p 1433:1433 -d paoloaimar/csvm-db-mssql",
     "build": "run-s build-azure run-container",
     "backup": "scripts\\cmd\\backup-db.bat",
     "get-backup": "scripts\\cmd\\get-backups.bat"
