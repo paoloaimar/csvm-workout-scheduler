@@ -1,9 +1,10 @@
 import { Router } from "express";
-import credentialStatusRouter from "./credentialStatus.routes";
-
+import userRouter from "./user.routes";
+import authRouter from "./authentication.routes"
 
 const router = Router();
 
-router.use("/credentialStatus", credentialStatusRouter);
+router.use("/user", userRouter);
+router.use("/auth", authRouter);
 
 export default router;

@@ -1,14 +1,18 @@
-import { CredentialStatus, EntityPagination, EntitySort, Filter, HttpResponse, PaginationInfo } from "../../common";
-import { logger } from "../services/logService";
-import { db } from "../services/mssqlService";
+import { Credential, CredentialStatus, EntityPagination, EntitySort, Filter, HttpResponse, PaginationInfo } from "../../common";
+import { logger } from "../services/log.service";
+import { db } from "../services/mssql.service";
 import { BaseController } from "../types/baseController";
 
-class CredentialStatusController extends BaseController {
+class CredentialController extends BaseController {
+
+    async findAll(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination, includeDisabled?: boolean): Promise<Credential[] | undefined> {
+        throw new Error("Method not implemented.");
+    }
 
     /**
-     * Get all credential status defined
+     * Get all credential statuses defined
      */
-    async findAll(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination, includeDisabled?: boolean): Promise<CredentialStatus[] | undefined> {
+    async findAllStatuses(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination, includeDisabled?: boolean): Promise<CredentialStatus[] | undefined> {
         try {
 
             //#region Statement Management
@@ -70,9 +74,14 @@ class CredentialStatusController extends BaseController {
         }
     }
 
-    findById(pkId: number) {
+    findById(pkId: number): Promise<Credential | undefined> {
         throw new Error("Method not implemented.");
     }
+
+    findByUsername(username: string): Promise<Credential[] | undefined> {
+        throw new Error("Method not implemented.");
+    }
+
     create(params: any): Promise<HttpResponse | undefined> {
         throw new Error("Method not implemented.");
     }
@@ -101,7 +110,7 @@ class CredentialStatusController extends BaseController {
      */
     public static getIstance(): BaseController {
         if (!BaseController._istance) {
-            BaseController._istance = new CredentialStatusController();
+            BaseController._istance = new CredentialController();
         }
 
 
@@ -110,4 +119,4 @@ class CredentialStatusController extends BaseController {
 
 }
 
-export const credentialStatusController = CredentialStatusController.getIstance()
+export const credentialController = CredentialController.getIstance() as CredentialController;

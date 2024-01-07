@@ -8,6 +8,7 @@
     "debug": "run-p start:backend start:frontend",
     "start:backend": "npm run debug --prefix backend",
     "start:frontend": "npm run start --prefix frontend",
+    "start:db": "npm run start --prefix database",
     "build:common": "npm run build --prefix common"
   },
   "repository": {

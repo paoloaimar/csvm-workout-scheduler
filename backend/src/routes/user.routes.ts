@@ -1,10 +1,16 @@
 import { Request, Response, Router } from "express";
-import { credentialStatusController } from "../controller/credentialStatus.controller";
+import { credentialController } from "../controller/credential.controller";
 import { EntityPagination, EntitySort, Filter } from "../../common";
 
-const credentialStatusRouter = Router({ mergeParams: true });
+const userRouter = Router({ mergeParams: true });
 
-credentialStatusRouter.get("/", async function (req: Request, res: Response) {
+/**
+* Route: api/v^/user/statuses
+* Type: GET
+* Functionality: 
+* Response type: JSON
+*/
+userRouter.get("/statuses", async function (req: Request, res: Response) {
 
     //get data of all areas defined
     let filters: Filter[] | undefined = undefined;
@@ -23,9 +29,9 @@ credentialStatusRouter.get("/", async function (req: Request, res: Response) {
     }
 
     //get data of all credential status defined
-    const resources = await credentialStatusController.findAll(filters, sorters, pagination, includeDisabled);
+    const resources = await credentialController.findAllStatuses(filters, sorters, pagination, includeDisabled);
     res.send(resources);
 })
 
 
-export default credentialStatusRouter;
+export default userRouter;

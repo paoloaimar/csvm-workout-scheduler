@@ -10,7 +10,7 @@ class LogService {
 
     constructor() {
 
-        this.Level = process.env.LOG_LEVEL ?? 'WARN';
+        this.Level = process.env.LOG_LEVEL ?? 'warn';
         this._init();
     }
 
@@ -164,7 +164,7 @@ class LogService {
     setNewLevel(newLevel: LogLevelDesc) {
         try {
 
-            this.Level = Object.keys(this.Levels)[Object.values(this.Levels).indexOf(newLevel)] ?? 'WARN';
+            this.Level = Object.keys(this.Levels)[Object.values(this.Levels).indexOf(newLevel)] ?? 'warn';
             log?.setLevel(this.Level as LogLevelDesc);
 
         } catch (error) {

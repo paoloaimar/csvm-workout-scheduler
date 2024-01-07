@@ -413,3 +413,12 @@ export enum SortOrder {
     ASC = "ASC",
     DESC = "DESC"
 }
+
+export enum UserStatuses {
+    Unverified = "Unverified",
+    Active = "Active",
+    Inactive = "Inactive",
+    Suspended = "Suspended",
+    Blocked = "Blocked",
+    Deleted = "Deleted"
+}

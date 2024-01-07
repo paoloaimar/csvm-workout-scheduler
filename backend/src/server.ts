@@ -1,12 +1,9 @@
-
-import { LogLevelDesc } from "loglevel";
-import { db } from "./services/mssqlService";
-
 //set the current working directory
 process.chdir(__dirname);
 
 import * as dotenv from 'dotenv';
-import { logger } from "./services/logService";
+import { logger } from "./services/log.service";
+import { authenticationService } from './services/authentication.service';
 dotenv.config();
 
 const bodyParser = require('body-parser')
@@ -23,18 +20,22 @@ const ws = require("express-ws")(app);
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+if (process.env.AUTH_ENABLED == 'true') {
+    app.use(authenticationService.Authenticator.initialize());
+    app.use(authenticationService.Authenticator.session());
+
+}
+
 //#region Middleware
 
 //#endregion
+
 
 //#region Router Mounting
 import routes from './routes';
 app.use('/api/v1', routes);
 //#endregion
 
-//Set Log level
-const LogLevel = Object.keys(logger.Levels)[Object.values(logger.Levels).indexOf(process.env.LOG_LEVEL)] ?? 'WARN'
-logger.setNewLevel(LogLevel as LogLevelDesc);
 
 //Start the Express Server
 const port = process.env.PORT || 3000;
