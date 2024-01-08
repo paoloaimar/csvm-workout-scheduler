@@ -17,7 +17,7 @@ const passwordIsValid = function (password: string, credentials: Credential[], p
         let pwdValid: boolean = false;
 
         credentials.every(credential => {
-            const passwordStored = credential.HashPwd;
+            const passwordStored = credential.HashPwd!;
 
             if (passwordInClear) {
                 pwdValid = password === decrypt(passwordStored, process.env.SECRET_KEY!);
@@ -69,5 +69,5 @@ const decrypt = function (cryptedValue: string, key: string): string | undefined
     }
 }
 
-export { passwordIsValid }
+export { passwordIsValid, encrypt, decrypt }
 

@@ -87,9 +87,10 @@ export type Credential = {
     PkId: number,
     StatusPkId: number,
     UserPkId: number,
-    Username: string,
+    Username?: string,
     Email: string,
-    HashPwd: string,
+    HashPwd?: string,
+    ClearPwd?: string,
     VerificationCode: string
     CreatedAt: Date,
     UpdatedAt?: Date,

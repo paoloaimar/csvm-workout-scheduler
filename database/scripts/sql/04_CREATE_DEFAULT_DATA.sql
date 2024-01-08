@@ -1,11 +1,12 @@
 USE [Csvm]
 GO
 
-DBCC CHECKIDENT ('CredentialStatus', RESEED, 1);
+DBCC CHECKIDENT ('CredentialStatus', RESEED, 0);
 
 INSERT INTO [CredentialStatus]
 ([Code], [Description])
 VALUES
+('Unverified', 'Credential unverified'),
 ('Active', 'Credential active'),
 ('Inactive', 'Credential inactive'),
 ('Suspended', 'Credential suspended'),
@@ -13,7 +14,7 @@ VALUES
 ('Deleted', 'Credential deleted');
 GO
 
-DBCC CHECKIDENT ('Roles', RESEED, 1);
+DBCC CHECKIDENT ('Roles', RESEED, 0);
 GO
 
 INSERT INTO [Roles]
@@ -26,7 +27,7 @@ VALUES
 (255, 'Admin', 'Administrator Role');
 GO
 
-DBCC CHECKIDENT ('Authorizations', RESEED, 1);
+DBCC CHECKIDENT ('Authorizations', RESEED, 0);
 GO
 
 INSERT INTO [Authorizations]
@@ -48,13 +49,12 @@ VALUES
 ('Exercise.Delete','Allow the possibility to delete existing exercises.');
 GO
 
-DBCC CHECKIDENT ('UserStatus', RESEED, 1);
+DBCC CHECKIDENT ('UserStatus', RESEED, 0);
 GO
 
 INSERT INTO [UserStatus]
 ([Code], [Description])
 VALUES
-('Unverified', 'User unverified status'),
 ('Active', 'User active status'),
 ('Inactive', 'User inactive status'),
 ('Suspended', 'User suspended status'),

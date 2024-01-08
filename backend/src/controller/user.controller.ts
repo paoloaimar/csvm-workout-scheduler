@@ -1,8 +1,15 @@
 import { Filter, EntitySort, EntityPagination, HttpResponse, PaginationInfo, User, Credential, HttpStatusCode } from "../../common";
 import { logger } from "../services/log.service";
+import { SqlParameter, db } from "../services/mssql.service";
 import { BaseController } from "../types/baseController";
+import uniqid from 'uniqid';
+import sql from 'mssql';
+import { encrypt } from './../helper/auth.helper'
 
-class UserController extends BaseController {
+class UserController implements BaseController {
+
+    private static _istance: UserController;
+
     async findAll(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination | undefined, includeDisabled?: boolean | undefined): Promise<User[] | undefined> {
         throw new Error("Method not implemented.");
     }
@@ -35,6 +42,32 @@ class UserController extends BaseController {
     async createCredential(params: Credential): Promise<HttpResponse | undefined> {
         try {
 
+            logger.debug(`Request the creation of a new user credential. Username: ${params.Username ?? params.Email}`);
+
+            //get a new unique verification code
+            params.VerificationCode = uniqid();
+
+            //hash the clear input password
+            params.HashPwd = encrypt(params.ClearPwd!, process.env.SECRET_KEY!)
+
+            const dbRes = await db.executeStoredProcedure('spCreateCredential', [
+                new SqlParameter("FirstName", params.User.FirstName, sql.NVarChar(100)),
+                new SqlParameter("LastName", params.User.LastName, sql.NVarChar(100)),
+                new SqlParameter("LoginName", params.User.LoginName ?? "", sql.NVarChar(100)),
+                new SqlParameter("Username", params.Username, sql.NVarChar(100)),
+                new SqlParameter("Email", params.Email, sql.NVarChar(100)),
+                new SqlParameter("HashPwd", params.HashPwd, sql.NVarChar(200)),
+                new SqlParameter("VerificationCode", params.VerificationCode, sql.NVarChar(200))
+            ]);
+            if (dbRes.success) {
+                //user's credential creation OK on db => send user verification email
+
+                return { success: true, code: HttpStatusCode.OK };
+            } else {
+                return { success: false, code: HttpStatusCode.INTERNAL_SERVER_ERROR, error: `Error inserting user's credential on db - ${dbRes.error}` };
+            }
+
+
         } catch (error: any) {
             logger.error(`User controller Error creating credential - ${error.message}`);
             return { code: HttpStatusCode.INTERNAL_SERVER_ERROR, success: false, error: error.message };
@@ -64,14 +97,14 @@ class UserController extends BaseController {
      * Return the current istance of the controller
      * @returns 
      */
-    public static getIstance(): BaseController {
-        if (!BaseController._istance) {
-            BaseController._istance = new UserController();
+    public static getIstance(): UserController {
+        if (!UserController._istance) {
+            UserController._istance = new UserController();
         }
 
 
-        return BaseController._istance;
+        return UserController._istance;
     }
 }
 
-export const userController = UserController.getIstance() as UserController;
+export const userController = UserController.getIstance();

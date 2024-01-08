@@ -11,7 +11,7 @@ const authenticationRouter = Router({ mergeParams: true });
 * Functionality: 
 * Response type: JSON
 */
-authenticationRouter.post("login", async function (req: Request, res: Response) {
+authenticationRouter.post("/login", async function (req: Request, res: Response) {
 
 });
 
@@ -21,7 +21,7 @@ authenticationRouter.post("login", async function (req: Request, res: Response) 
 * Functionality: 
 * Response type: JSON
 */
-authenticationRouter.post("logout", async function (req: Request, res: Response) {
+authenticationRouter.post("/logout", async function (req: Request, res: Response) {
 
 });
 
@@ -31,7 +31,7 @@ authenticationRouter.post("logout", async function (req: Request, res: Response)
 * Functionality: 
 * Response type: JSON
 */
-authenticationRouter.post("signup", async function (req: Request, res: Response) {
+authenticationRouter.post("/signup", async function (req: Request, res: Response) {
 
     try {
         //request validation
@@ -39,9 +39,13 @@ authenticationRouter.post("signup", async function (req: Request, res: Response)
             res.status(HttpStatusCode.BAD_REQUEST).send(`Invalid body supplied in the request.`);
         } else {
             const params = req.body as Credential;
+
+            if (!params.ClearPwd || !params.Email || !params.Username || !params.User.FirstName || !params.User.LastName) {
+                return res.status(HttpStatusCode.BAD_REQUEST).send(`Invalid body supplied in the request. The minimum required fields are Password, Email, Username, FirstName and LastName`);
+
+            }
             res.status(HttpStatusCode.OK).send(await userController.createCredential(params));
         }
-
     } catch (error: any) {
         return {
             code: HttpStatusCode.INTERNAL_SERVER_ERROR,

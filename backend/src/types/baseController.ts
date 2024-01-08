@@ -1,21 +1,16 @@
 import { EntityPagination, EntitySort, Filter, HttpResponse, HttpStatusCode, PaginationInfo } from "../../common";
 
-export abstract class BaseController {
+export interface BaseController {
 
-    public static _istance: BaseController;
-
-    /**
-     * 
-     */
-    abstract findAll(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination, includeDisabled?: boolean): any
-    abstract findById(pkId: number): any
-    abstract create(params: any): Promise<HttpResponse | undefined>
-    abstract update(params: any, pkId: number): Promise<HttpResponse>
-    abstract remove(pkId: number): Promise<HttpResponse>
-    abstract disable(pkId: number): Promise<HttpResponse>
-    abstract disableMany(pkIds: number[]): Promise<HttpResponse>
-    abstract createMany(params: any, clientId?: string): Promise<HttpResponse>
-    abstract getRecordCount(resultPerPage: number, filterStatement?: string, includeDisabled?: boolean): Promise<PaginationInfo>
+    findAll(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination, includeDisabled?: boolean): any
+    findById(pkId: number): any
+    create(params: any): Promise<HttpResponse | undefined>
+    update(params: any, pkId: number): Promise<HttpResponse>
+    remove(pkId: number): Promise<HttpResponse>
+    disable(pkId: number): Promise<HttpResponse>
+    disableMany(pkIds: number[]): Promise<HttpResponse>
+    createMany(params: any, clientId?: string): Promise<HttpResponse>
+    getRecordCount(resultPerPage: number, filterStatement?: string, includeDisabled?: boolean): Promise<PaginationInfo>
 
 
 }

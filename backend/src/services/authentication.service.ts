@@ -97,6 +97,11 @@ class AuthenticationService {
     private async _deserializeUser(user: Express.User, done: PassportDoneFunction): Promise<void> {
         try {
             const cookieCredential = user as Credential;
+
+            if (!cookieCredential.Username) {
+                throw new Error("No username found on cookie session");
+            }
+
             const credential = await credentialController.findByUsername(cookieCredential.Username);
             if (!credential) {
                 //credential not found for the user

@@ -3,7 +3,9 @@ import { logger } from "../services/log.service";
 import { db } from "../services/mssql.service";
 import { BaseController } from "../types/baseController";
 
-class CredentialController extends BaseController {
+class CredentialController implements BaseController {
+
+    private static _istance: CredentialController;
 
     async findAll(filters?: Filter[] | undefined, sorters?: EntitySort[] | undefined, pagination?: EntityPagination, includeDisabled?: boolean): Promise<Credential[] | undefined> {
         throw new Error("Method not implemented.");
@@ -108,15 +110,15 @@ class CredentialController extends BaseController {
      * Return the current istance of the controller
      * @returns 
      */
-    public static getIstance(): BaseController {
-        if (!BaseController._istance) {
-            BaseController._istance = new CredentialController();
+    public static getIstance(): CredentialController {
+        if (!CredentialController._istance) {
+            CredentialController._istance = new CredentialController();
         }
 
 
-        return BaseController._istance;
+        return CredentialController._istance as CredentialController;
     }
 
 }
 
-export const credentialController = CredentialController.getIstance() as CredentialController;
+export const credentialController = CredentialController.getIstance();
