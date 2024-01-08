@@ -1,0 +1,41 @@
+{
+	"info": {
+		"_postman_id": "749c5e54-5c6b-463c-812b-e7bee5cc555a",
+		"name": "CSVM",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20470356"
+	},
+	"item": [
+		{
+			"name": "Create User Credential",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Username\": \"paoloaimar\",\r\n    \"Email\": \"paolo.aimar@fgainformatica.com\",\r\n    \"ClearPwd\": \"ciaomamma\",\r\n    \"User\": {\r\n        \"FirstName\": \"Paolo\",\r\n        \"LastName\": \"Aimar\",\r\n        \"LoginName\": \"PA\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/v1/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"v1",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
